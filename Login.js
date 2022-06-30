@@ -3,34 +3,33 @@ import { SafeAreaView, StyleSheet, TextInput, TouchableOpacity, Text } from "rea
 
 const sendText = async (phoneNumber) => {
   console.log("Phone Number: ",phoneNumber);
-//using fetch do a POST to https://dev.stedi.me/twofactorlogin/385-333-8017
-const loginResponse = await fetch('https://dev.stedi.me/twofactorlogin/'+phoneNumber,{
+const loginResponse = await fetch('https://dev.stedi.me/twofactorlogin/'+phoneNumber,{  //using fetch do a POST to https://dev.stedi.me/twofactorlogin/385-333-8017
   method: 'POST',
   headers: {
     'Content-Type': 'application/text'
   }
 });
-  const loginResponseText = await loginResponse.text();//converts the promise to a string by using await
-  console.log("PhoneNumber: ",phoneNumber);
-  console.log('Login Response',loginResponseText);
+  
 };
 
-const getToken = async({phoneNumber,oneTimePassword}) =>{//this code is not complete just showing how to do a post with a body
-  const loginResponse = await fetch('https://dev.stedi.me/twofactorlogin',{
+const getToken = async({phoneNumber, oneTimePassword, setUserLoggedIn}) =>{  //this code is not complete just showing how to do a post with a body
+  const tokenResponse = await fetch('https://dev.stedi.me/twofactorlogin',{
   method: 'POST',
+  body:JSON.stringify({oneTimePassword, phoneNumber}),
   headers: {
-    'Content-Type': 'application/text'
+    'Content-Type':'application/text'
   },
-  body:{
-    phooneNumber,
-    oneTimePassword
-  }
 });
-const token = await loginResponse.text();
-console.log(token);
+
+const responseCode = tokenResponse.status;//200 means logged in successfully
+console.log("Response Status Code", responseCode);
+if(responseCode==200){
+  setUserLoggedIn(true);
+}
+const tokenResponseString = await tokenResponse.text();
 }
 
-const Login = () => {
+const Login = (props) => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [oneTimePassword, setOneTimePassword] = useState(null);
 
@@ -60,7 +59,9 @@ const Login = () => {
       />
        <TouchableOpacity
         style={styles.button}
-        onPress={()=>{sendText(phoneNumber)}}
+        onPress={()=>{
+          getToken({phoneNumber, oneTimePassword, setUserLoggedIn:props.setUserLoggedIn});
+        }}
       >
         <Text>Login</Text>
       </TouchableOpacity>

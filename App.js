@@ -19,7 +19,7 @@ export default function App() {
 
   if(userLoggedIn){
 
-
+    
   return (
     <NavigationContainer>
       <Tab.Navigator
@@ -61,12 +61,16 @@ export default function App() {
     </NavigationContainer>
   );
 
-  } else{
+  } else {
+
     return(
-    <View>
-      <Login/>
-    </View>
+      <View>
+      <Login setUserLoggedIn={setUserLoggedIn}/>
+      </View>
+      
     )
+
+    
     }
 }
 
