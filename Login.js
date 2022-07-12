@@ -12,7 +12,7 @@ const loginResponse = await fetch('https://dev.stedi.me/twofactorlogin/'+phoneNu
   
 };
 
-const getToken = async({phoneNumber, oneTimePassword, setUserLoggedIn}) =>{  //this code is not complete just showing how to do a post with a body
+const getToken = async({phoneNumber, oneTimePassword, setUserLoggedIn, setEmailAddress}) =>{  //this code is not complete just showing how to do a post with a body
   const tokenResponse = await fetch('https://dev.stedi.me/twofactorlogin',{
   method: 'POST',
   body:JSON.stringify({oneTimePassword, phoneNumber}),
@@ -24,9 +24,22 @@ const getToken = async({phoneNumber, oneTimePassword, setUserLoggedIn}) =>{  //t
 const responseCode = tokenResponse.status;//200 means logged in successfully
 console.log("Response Status Code", responseCode);
 if(responseCode==200){
+
   setUserLoggedIn(true);
-}
+
 const tokenResponseString = await tokenResponse.text();
+
+
+const emailResponse =await fetch('https://dev.stedi.me/validate/'+tokenResponseString,);
+const emailResponseString = await emailResponse.text()
+console.log("Email Text:", emailResponseString)
+setEmailAddress (emailResponseString) ;
+}
+
+}
+
+const getEmailToken = async ({tokenResponse}) => {
+
 }
 
 const Login = (props) => {
@@ -60,7 +73,7 @@ const Login = (props) => {
        <TouchableOpacity
         style={styles.button}
         onPress={()=>{
-          getToken({phoneNumber, oneTimePassword, setUserLoggedIn:props.setUserLoggedIn});
+          getToken({phoneNumber, oneTimePassword, setUserLoggedIn:props.setUserLoggedIn, setEmailAddress:props.setEmailAddress});
         }}
       >
         <Text>Login</Text>

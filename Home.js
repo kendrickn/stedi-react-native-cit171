@@ -3,11 +3,14 @@ import { StyleSheet, Text, View, Image } from 'react-native';
 import { Card, Button } from 'react-native-elements';
 import Icons from './Icons.js';
 import Bar  from './Bar.js';
+import setEmailAddress from './App.js';
+import emailAddress from './Login.js';
 
-const Home = () => {
+const Home = (props) => {
+console.log(props.loggedInUser)
   return (
     <View>
-      <Bar loggedInUser='nate.kendrick1@gmail.com' />
+      <Bar loggedInUser = {props.loggedInUser} />
       <Icons />
     </View>
   );
